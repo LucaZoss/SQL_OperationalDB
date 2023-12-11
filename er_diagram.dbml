@@ -1,0 +1,90 @@
+Table “Inventory” {
+  “Model” VARCHAR(255) [pk]
+  “Stock” INT
+}
+Table “Phone” {
+  “PhoneID” VARCHAR(6) [pk]
+  “PhoneBrand” VARCHAR(255)
+  “SupplierID” VARCHAR(30)
+}
+Table “PhoneAttributes” {
+  “PhoneID” VARCHAR(6) [pk]
+  “Model” VARCHAR(255)
+  “Price” DECIMAL(10,2) [not null]
+  “Color” VARCHAR(255)
+  “Storage” VARCHAR(255)
+  “Memory” VARCHAR(255)
+  “Camera” VARCHAR(255)
+  “Size” VARCHAR(255)
+  “AspectRatio” VARCHAR(10)
+  “Connectivity” VARCHAR(255)
+  “Processor” VARCHAR(255)
+  “OS” VARCHAR(255)
+}
+Table “Supplier” {
+  “SupplierID” VARCHAR(30) [pk]
+  “SupplierName” VARCHAR(255)
+  “ContactInfo” VARCHAR(255)
+  “ContactName” VARCHAR(255)
+}
+Table “Salesman” {
+  “SalesmanID” VARCHAR(5) [pk]
+  “Name” VARCHAR(255)
+  “LastName” VARCHAR(255)
+  “ContactNumber” VARCHAR(10)
+}
+Table “Customer” {
+  “CustomerID” INT [pk]
+  “Customer_Name” VARCHAR(255) [not null]
+  “Customer_LastName” VARCHAR(255) [not null]
+  “Customer_PhoneNumber” VARCHAR(10)
+  “Customer_DateOfBirth” DATE
+}
+Table “CreditCardType” {
+  “CreditCardProvider_ID” VARCHAR(4) [pk]
+  “ProviderName” VARCHAR(50)
+}
+Table “CreditCard” {
+  “PaymentID” VARCHAR(5) [pk]
+  “CardNumber” VARCHAR(25) [not null]
+  “ExpiryDate” DATE [not null]
+  “CreditCardProvider_ID” VARCHAR(4)
+}
+Table “DebitCard” {
+  “PaymentID” VARCHAR(255) [pk]
+  “DebitNumber” VARCHAR(20) [not null]
+}
+Table “Payment_plan” {
+  “PaymentPlanID” VARCHAR(5) [pk]
+  “PlanType” VARCHAR(16) [not null]
+  “PaymentCycle” VARCHAR(16) [not null]
+}
+Table “SalesTicket” {
+  “SalesTicketID” VARCHAR(10) [pk]
+  “SalesmanID” VARCHAR
+  “CustomerID” INT
+  “PaymentID” VARCHAR
+  “SaleDate” DATETIME
+}
+Table “TicketItems” {
+  “TicketID” VARCHAR(10) [pk]
+  “PhoneID” VARCHAR(6) [pk]
+  “ItemQuantity” SMALLINT
+}
+Table “Payment_Info” {
+  “PaymentID” VARCHAR(5) [pk]
+  “PaymentPlanID” VARCHAR (5)
+  “PaymentMethod” VARCHAR(255)
+}
+Ref: “Salesman”.“SalesmanID” < “SalesTicket”.“SalesmanID”
+Ref: “SalesTicket”.“PaymentID” - “Payment_Info”.“PaymentID”
+Ref: “Payment_Info”.“PaymentID” - “CreditCard”.“PaymentID”
+Ref: “Payment_Info”.“PaymentID” - “DebitCard”.“PaymentID”
+Ref: “CreditCardType”.“CreditCardProvider_ID” - “CreditCard”.“CreditCardProvider_ID”
+Ref: “Payment_Info”.“PaymentPlanID” - “Payment_plan”.“PaymentPlanID”
+Ref: “Supplier”.“SupplierID” < “Phone”.“SupplierID”
+Ref: “SalesTicket”.“CustomerID” - “Customer”.“CustomerID”
+Ref: “Phone”.“PhoneID” - “PhoneAttributes”.“PhoneID”
+Ref: “Inventory”.“Model” - “PhoneAttributes”.“Model”
+Ref: “TicketItems”.“TicketID” - “SalesTicket”.“SalesTicketID”
+Ref: “TicketItems”.“TicketID” - “Phone”.“PhoneID”
